@@ -1,5 +1,5 @@
 from sqlmodel import SQLModel, Session, select
-from db import engine, Course, Payment
+from db import engine, Course, Payment, User
 
 SQLModel.metadata.create_all(bind=engine)
 
@@ -27,9 +27,25 @@ with Session(engine) as session:
     except Exception:
         pass
 
+    try:
+        session.add(User(
+            username="admin",
+            password="admin",
+            first_name="admin",
+            last_name="admin",
+            second_name="admin",
+            phone="admin",
+            email="admin",
+            role="admin"
+        ))
+    except Exception:
+        pass
+
     session.commit()
 
     courses = session.exec(select(Course)).all()
     payment = session.exec(select(Payment)).all()
+    users = session.exec(select(User)).all()
     print(courses)
     print(payment)
+    print(users)
