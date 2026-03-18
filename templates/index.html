@@ -13,6 +13,7 @@
     {% endfor %}
 
     <form action="/create/" method="post">
+        <input name="user_id" value="{{ user_id }}" hidden />
         <select name="course_id">
             {% for course in courses %}
             <option value="{{ course.id }}">{{ course["title"] }}</option>
