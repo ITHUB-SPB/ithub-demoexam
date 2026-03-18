@@ -7,7 +7,7 @@ from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from db import Course, engine, Payment, Request as UserRequest
+from db import Course, engine, Payment, Request as UserRequest, User
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
@@ -42,3 +42,43 @@ def index(request: Request):
             "requests": requests
         }
     )
+
+@app.get('/register')
+def register(request: Request):
+    return templates.TemplateResponse(
+        "register.html",
+        { "request": request }
+    )
+
+@app.post('/register')
+def register_form(request: Request, user: Annotated[User, Form()]):
+    print(user)
+    user.role = 'user'
+
+    with Session(engine) as session:
+        session.add(user)
+        session.commit()
+
+    return RedirectResponse('/login', status_code=303)
+
+@app.get('/login')
+def login(request: Request):
+    return templates.TemplateResponse(
+        "login.html",
+        { "request": request }
+    )
+
+@app.post('/login')
+def login_form(
+        request: Request,
+        username: Annotated[str, Form()],
+        password: Annotated[str, Form()]
+):
+    with Session(engine) as session:
+        statement = select(User).where(User.username == username).where(User.password == password)
+        result = session.exec(statement).all()
+
+        if not result:
+            return RedirectResponse('/login', status_code=303)
+
+        return RedirectResponse('/', status_code=303)
