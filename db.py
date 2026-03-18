@@ -25,7 +25,7 @@ class User(SQLModel, table=True):
 
 class Request(SQLModel, table=True):
     id: int | None = Field(primary_key=True)
-    date: date
+    date: str
     payment_id: int = Field(foreign_key="payment.id")
     course_id: int = Field(foreign_key="course.id")
     user_id: int = Field(foreign_key="user.id")

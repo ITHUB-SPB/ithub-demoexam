@@ -1,3 +1,4 @@
+import time
 from typing import Annotated
 from datetime import date
 
@@ -22,6 +23,8 @@ templates = Jinja2Templates(directory="templates")
 
 @app.post('/create/')
 def create_request(user_request: Annotated[UserRequest, Form()]):
+    print(user_request)
+
     with Session(engine) as session:
         session.add(user_request)
         session.commit()
@@ -38,7 +41,7 @@ async def admin(request: Request):
     except Exception:
         return RedirectResponse('/login', status_code=303)
 
-    if payload.extra_dict["role"] != 'admin':
+    if payload.extra_dict.get("role") != 'admin':
         return RedirectResponse('/', status_code=303)
 
     with Session(engine) as session:
@@ -62,7 +65,6 @@ async def index(request: Request):
         return RedirectResponse('/login', status_code=303)
 
     user_id = int(payload.sub)
-
     print(payload)
 
     if payload.extra_dict.get("role") == 'admin':
@@ -128,8 +130,9 @@ def login_form(
         "role": result.role
     })
 
+    url = '/' if result.role == 'user' else '/admin'
 
-    response = RedirectResponse('/', status_code=303)
+    response = RedirectResponse(url, status_code=303)
     auth.set_access_cookies(token, response)
 
     return response
