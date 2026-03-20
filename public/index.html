@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>регистрация</title>
+</head>
+<body>
+<div id="message"></div>
+     <p>
+        Введите имя: <br />
+        <input name="username" id="username" />
+    </p>
+    <p>
+        Введите surname: <br />
+        <input name="surname" id="surname" />
+    </p>
+     <p>
+        Введите email: <br />
+        <input name="email" id="email"  />
+    </p>
+    <p>
+        Введите phone: <br />
+        <input name="phone" id="phone"  />
+    </p>
+    <p>
+        Введите password: <br />
+        <input name="password" id="password"  />
+    </p>
+    <button onclick="send()">Отправить</button>
+<script>
+    async function send(){
+
+
+        const username = document.getElementById("username").value;
+        const surname = document.getElementById("surname").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const password = document.getElementById("password").value;
+
+
+        const response = await fetch("/reg", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: username,
+                    surname: surname,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("message").textContent = data.message;
+                console.log(data.message);
+            }
+            else
+                console.log(response);
+    }
+</script>
+
+</body>
+</html>
