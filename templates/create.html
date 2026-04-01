@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Новая заявка</title>
+
+    <style>
+      form p {
+        visibility: hidden;
+        margin-top: 4px;
+        font-size: small;
+      }
+
+      input:user-invalid + p {
+        visibility: visible;
+      }
+
+      form:has(:invalid) button {
+        pointer: default;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+    </style>
+</head>
+<body>
+
+<form action="/create" method="post" novalidate>
+    <select name="course">
+        <option value="Основы алгоритмизации и программирования">Основы алгоритмизации и программирования</option>
+        <option value="Основы веб-дизайна">Основы веб-дизайна</option>
+        <option value="Основы проектирования баз данных">Основы проектирования баз данных</option>
+    </select>
+
+    <input type="date" name="date" placeholder="Дата начала" required>
+    <p>Заполните поле</p>
+
+    <select name="payment">
+        <option value="Наличные">Наличные</option>
+        <option value="Перевод по номеру">Перевод по номеру</option>
+    </select>
+
+    <button type="submit">Отправить</button>
+</form>
+</body>
+</html>

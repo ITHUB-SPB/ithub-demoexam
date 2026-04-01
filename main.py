@@ -7,6 +7,20 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 
 
+class Record(SQLModel, table=True):
+    id: int | None = Field(primary_key=True, default=None)
+    course: str
+    date: str
+    payment: str
+    user_id: int
+
+
+class NewRecord(SQLModel):
+    course: str
+    date: str
+    payment: str
+
+
 class User(SQLModel, table=True):
     id: int | None = Field(primary_key=True, default=None)
     login: str = Field(unique=True)
@@ -48,7 +62,7 @@ def profile(request: Request):
     user_id = request.cookies.get('user_id')
 
     with Session(bind=engine) as session:
-        s = select().where()
+        s = select(Record).where(Record.user_id == int(user_id))
         records = session.exec(s).all()
 
     return templates.TemplateResponse(
@@ -56,6 +70,38 @@ def profile(request: Request):
         'profile.html',
         { "records": records }
     )
+
+
+@app.get('/logout')
+def logout():
+    response = RedirectResponse('/login', status_code=302)
+
+    response.delete_cookie('user_id')
+    response.delete_cookie('role')
+
+    return response
+
+
+@app.get('/create')
+def create(request: Request):
+    return templates.TemplateResponse(request, 'create.html')
+
+
+@app.post('/create')
+def create_process(request: Request, new_record: Annotated[NewRecord, Form()]):
+    user_id = request.cookies.get('user_id')
+
+    with Session(bind=engine) as session:
+        session.add(Record(
+            user_id=user_id,
+            course=new_record.course,
+            payment=new_record.payment,
+            date=new_record.date
+        ))
+        session.commit()
+
+    return RedirectResponse('/profile', status_code=302)
+
 
 
 @app.get('/register')

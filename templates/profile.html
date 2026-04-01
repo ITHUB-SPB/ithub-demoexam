@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Мои заявки</title>
 </head>
 <body>
+    <a href="/logout">Выйти</a>
+    <a href="/create">Создать заявку</a>
 
+    <table>
+        <tr>
+            <th>Курс</th>
+            <th>Оплата</th>
+            <th>Дата</th>
+        </tr>
+        {% for item in records %}
+            <tr>
+                <td>{{ item["course"] }}</td>
+                <td>{{ item["payment"] }}</td>
+                <td>{{ item["date"] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </body>
 </html>
