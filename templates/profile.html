@@ -1,26 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Мои заявки</title>
-</head>
-<body>
+{% extends './_layout.html' %}
+
+{% block title %}Мои заявки{% endblock %}
+
+{% block content %}
+<header>
     <a href="/logout">Выйти</a>
     <a href="/create">Создать заявку</a>
-
+</header>
+<main>
     <table>
-        <tr>
-            <th>Курс</th>
-            <th>Оплата</th>
-            <th>Дата</th>
-        </tr>
-        {% for item in records %}
+        <thead>
+            <tr>
+                <th>Курс</th>
+                <th>Оплата</th>
+                <th>Дата</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in records %}
             <tr>
                 <td>{{ item["course"] }}</td>
                 <td>{{ item["payment"] }}</td>
                 <td>{{ item["date"] }}</td>
             </tr>
-        {% endfor %}
+            {% endfor %}
+        </tbody>
     </table>
-</body>
-</html>
+</main>    
+{% endblock %}
