@@ -1,31 +1,38 @@
-{% extends './_layout.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Мои заявки</title>
+</head>
+<body>
+    <nav>
+        <a href="/logout">Выйти</a>
+        <a href="/create">Создать заявку</a>
+    </nav>
 
-{% block title %}Мои заявки{% endblock %}
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>Курс</th>
+                    <th>Оплата</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in records %}
+                <tr>
+                    <td>{{ item["course"] }}</td>
+                    <td>{{ item["payment"] }}</td>
+                    <td>{{ item["date"] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
 
-{% block nav %}
-    <a href="/logout">Выйти</a>
-    <a href="/create">Создать заявку</a>
-{% endblock %}
+</body>
+</html>
 
-{% block content %}
-<main>
-    <table>
-        <thead>
-            <tr>
-                <th>Курс</th>
-                <th>Оплата</th>
-                <th>Дата</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in records %}
-            <tr>
-                <td>{{ item["course"] }}</td>
-                <td>{{ item["payment"] }}</td>
-                <td>{{ item["date"] }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</main>    
-{% endblock %}
+
