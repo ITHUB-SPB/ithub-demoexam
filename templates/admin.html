@@ -1,5 +1,39 @@
 {% extends '_layout.html' %}
 
-{% block content %}
+{% block nav %}
+    <a href="/logout">Выйти</a>
+{% endblock %}
 
+{% block content %}
+    <table>
+        <thead>
+            <tr>
+                <th>Пользователь</th>
+                <th>Курс</th>
+                <th>Оплата</th>
+                <th>Дата</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item, user in records %}
+            <tr>
+                <td>{{ user["fio"] }}</td>
+                <td>{{ item["course"] }}</td>
+                <td>{{ item["payment"] }}</td>
+                <td>{{ item["date"] }}</td>
+                <td>
+                    <form method="post" action="/update/{{ item['id'] }}">
+                        <select name="status">
+                            <option value="Новая" {% if item['status'] == 'Новая' %} selected {% endif %}>Новая</option>
+                            <option value="Идёт обучение" {% if item['status'] == 'Идёт обучение' %} selected {% endif %}>Идёт обучение</option>
+                            <option value="Обучение завершено" {% if item['status'] == 'Обучение завершено' %} selected {% endif %}>Обучение завершено</option>
+                        </select>
+                        <button type="submit">Сохранить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

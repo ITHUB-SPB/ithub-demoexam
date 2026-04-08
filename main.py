@@ -13,6 +13,7 @@ class Record(SQLModel, table=True):
     course: str
     date: str
     payment: str
+    status: str
     user_id: int
 
 
@@ -60,6 +61,21 @@ def index(request: Request):
     return RedirectResponse('/profile', status_code=302)
 
 
+@app.get('/admin')
+def admin(request: Request):
+    role = request.cookies.get('role')
+
+    with Session(bind=engine) as session:
+        s = select(Record, User).where(Record.user_id == User.id)
+        records = session.exec(s).all()
+
+    return templates.TemplateResponse(
+        request,
+        'admin.html',
+        { "records": records }
+    )
+
+
 @app.get('/profile')
 def profile(request: Request):
     role = request.cookies.get('role')
@@ -100,11 +116,24 @@ def create_process(request: Request, new_record: Annotated[NewRecord, Form()]):
             user_id=user_id,
             course=new_record.course,
             payment=new_record.payment,
-            date=new_record.date
+            date=new_record.date,
+            status="Новая"
         ))
         session.commit()
 
     return RedirectResponse('/profile', status_code=302)
+
+@app.post('/update/{update_id}')
+def update_process(request: Request, update_id: int, status: Annotated[str, Form()]):
+    with Session(bind=engine) as session:
+        s = select(Record).where(Record.id == update_id)
+        record: Record = session.exec(s).one()
+        record.status = status
+        session.add(record)
+        session.commit()
+        session.refresh(record)
+
+    return RedirectResponse('/admin', status_code=302)
 
 
 
@@ -137,6 +166,12 @@ def login(request: Request):
 
 @app.post('/login')
 def login_process(request: Request, user_auth: Annotated[UserAuth, Form()]):
+    response = RedirectResponse('/', status_code=302)
+
+    if user_auth.login == 'Admin1' and user_auth.password == "KorokNET":
+        response.set_cookie('role', 'admin')
+        return response
+
     with Session(bind=engine) as session:
         s = select(User).where(User.login == user_auth.login).where(User.password == user_auth.password)
         user: User | None = session.exec(s).one_or_none()
@@ -146,8 +181,6 @@ def login_process(request: Request, user_auth: Annotated[UserAuth, Form()]):
                 'login.html',
                 { "error": "Не удалось войти" }
             )
-
-        response = RedirectResponse('/', status_code=302)
 
         response.set_cookie('user_id', user.id)
         response.set_cookie('role', user.role)

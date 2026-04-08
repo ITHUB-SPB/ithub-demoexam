@@ -12,6 +12,7 @@
                 <th>Курс</th>
                 <th>Оплата</th>
                 <th>Дата</th>
+                <th>Статус</th>
             </tr>
         </thead>
         <tbody>
@@ -20,10 +21,9 @@
                 <td>{{ item["course"] }}</td>
                 <td>{{ item["payment"] }}</td>
                 <td>{{ item["date"] }}</td>
+                <td>{{ item["status"] }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 {% endblock %}
-
-
