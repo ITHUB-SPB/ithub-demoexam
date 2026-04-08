@@ -25,6 +25,17 @@ body {
     margin-right: auto;
 }
 
+.glide__arrows {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.glide__arrow {
+    padding: 0 8px;
+}
+
 form p {
     visibility: hidden;
     margin-top: 4px;
