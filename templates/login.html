@@ -1,44 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Логин</title>
+{% extends '_layout.html' %}
 
-    <style>
-      form p {
-        visibility: hidden;
-        margin-top: 4px;
-        font-size: small;
-      }
+{% block content %}
+    <form action="/login" method="post" novalidate>
+      <input type="text" name="login" placeholder="Логин" pattern="[a-zA-Z0-9]{6,}" required>
+      <p>Латиница и цифры, не менее 6 символов</p>
 
-      input:user-invalid + p {
-        visibility: visible;
-      }
+      <input type="password" name="password" placeholder="Пароль" minlength="8" required>
+      <p>Минимум 8 символов</p>
 
-      form:has(:invalid) button {
-        pointer: default;
-        opacity: 0.5;
-        pointer-events: none;
-      }
-    </style>
-</head>
-<body>
+      <button type="submit">Отправить</button>
+    </form>
 
-{% if error %}
-<p>{{ error }}</p>
-{% endif %}
-
-<form action="/login" method="post" novalidate>
-  <input type="text" name="login" placeholder="Логин" pattern="[a-zA-Z0-9]{6,}" required>
-  <p>Латиница и цифры, не менее 6 символов</p>
-
-  <input type="password" name="password" placeholder="Пароль" minlength="8" required>
-  <p>Минимум 8 символов</p>
-
-  <button type="submit">Отправить</button>
-</form>
-
-<a href="/register">Еще не зарегистрированы? Регистрация</a>
-
-</body>
-</html>
+    <a href="/register">Еще не зарегистрированы? Регистрация</a>
+{% endblock %}

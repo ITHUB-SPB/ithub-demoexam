@@ -1,0 +1,52 @@
+body {
+    min-height: 100dvh;
+}
+
+.page {
+    min-height: 100dvh;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.header {
+    height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo {
+    height: 100%;
+    width: auto;
+    margin-right: auto;
+}
+
+form p {
+    visibility: hidden;
+    margin-top: 4px;
+    font-size: small;
+}
+
+input {
+    margin-bottom: 0 !important;
+}
+
+input:user-invalid + p {
+    visibility: visible;
+}
+
+form:has(:invalid) button {
+    pointer: default;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@media (max-width: 420px) {
+    :root {
+        font-size: 10px;
+    }
+}

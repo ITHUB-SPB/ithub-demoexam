@@ -1,29 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Новая заявка</title>
+{% extends '_layout.html' %}
 
-    <style>
-      form p {
-        visibility: hidden;
-        margin-top: 4px;
-        font-size: small;
-      }
+{% block nav %}
+    <a href="/logout">Выйти</a>
+    <a href="/create">Создать заявку</a>
+{% endblock %}
 
-      input:user-invalid + p {
-        visibility: visible;
-      }
-
-      form:has(:invalid) button {
-        cursor: default;
-        opacity: 0.5;
-        pointer-events: none;
-      }
-    </style>
-</head>
-<body>
-
+{% block content %}
 <form action="/create" method="post" novalidate>
     <select name="course">
         <option value="Основы алгоритмизации и программирования">Основы алгоритмизации и программирования</option>
@@ -41,5 +23,4 @@
 
     <button type="submit">Отправить</button>
 </form>
-</body>
-</html>
+{% endblock %}

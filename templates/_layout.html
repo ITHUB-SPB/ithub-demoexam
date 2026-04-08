@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Заявки</title>
+    <link rel="stylesheet" href="/static/vendor/pico.css">
+    <link rel="stylesheet" href="/static/vendor/glide.core.css">
+    <link rel="stylesheet" href="/static/global.css">
+</head>
+<body>
+    <div class="page">
+        <header class="header">
+            <span>Корочки.NET</span>
+            <img class="logo" src="/static/images/branding/image05.jpg" />
+            {% block nav %} {% endblock %}
+        </header>
+
+        <div class="glide">
+            <div data-glide-el="track" class="glide__track">
+                <div class="glide__slides">
+                    <img class="glide__slide" src="/static/images/slider/image06.jpg" alt="">
+                    <img class="glide__slide" src="/static/images/slider/image07.jpg" alt="">
+                    <img class="glide__slide" src="/static/images/slider/image08.webp" alt="">
+                    <img class="glide__slide" src="/static/images/slider/image10.webp" alt="">
+                </div>
+            </div>
+        </div>
+
+        {% if error %}
+            <p>{{ error }}</p>
+        {% endif %}
+
+        {% block content %} {% endblock %}
+    </div>
+
+    <script src="/static/vendor/glide.js"></script>
+    <script>
+        new Glide('.glide', { autoplay: 3000, perView: 2 }).mount()
+    </script>
+</body>
+</html>
