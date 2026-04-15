@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KorokNET</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<h1>Новая заявка</h1>
+    <div class="nav"><a href="/profile">Назад</a></div>
+
+   <form method="post">
+        Курс: <select name="course">
+        {%for c in courses%}
+       <option value="{{c}}">{{c}}</option>
+        {%endfor%}
+        </select> <br>
+
+      Дата старта: <input type="date" name="date"required> <br>
+
+
+       Способ оплаты: <select name="payment">
+        {%for p in payments%}
+       <option value="{{p}}">{{p}}</option>
+        {%endfor%}
+        </select> <br>
+
+      <button type="submit">Потвердить</button>
+    </form>
+
+</body>
+</html>

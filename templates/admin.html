@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KorokNET</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<h1>Админ-панель</h1>
+    <div class="nav"><a href="/logout">Выйти</a></div>
+
+    <form action="/admin" class="form-filter">
+      Фильтр по:
+      <select name="status" onchange="this.form.submit()">
+          <option {%if cur_status == 'Все'%} selected {%endif%} value="Все">Все</option>
+          <option {%if cur_status == 'Новая'%} selected {%endif%} value="Новая">Новая</option>
+          <option {%if cur_status == 'В процессе'%} selected {%endif%} value="В процессе">В процессе</option>
+          <option {%if cur_status == 'Обучение завершено'%} selected {%endif%} value="Обучение завершено">Обучение завершено</option>
+      </select> <br>
+    </form>
+
+    <table>
+        <tr>
+            <th>ID</th><th>Логин</th><th>ФИО</th><th>Курс</th><th>Дата старта</th><th>Способ оплаты</th><th>Отзыв</th><th>Статус</th>
+        </tr>
+        {%for r in requests%}
+        <tr>
+            <td>{{r.id}}</td>
+            <td>{{r.login}}</td>
+            <td>{{r.fio}}</td>
+            <td>{{r.course_name}}</td>
+            <td>{{r.date_start}}</td>
+            <td>{{r.payment_method}}</td>
+            <td>{{r.review or ''}}</td>
+            <td>
+                <form method="post" action="/admin/change_status" class="form-status">
+                  <input type="hidden" name="request_id" value="{{r.id}}">
+                  <select name="status" onchange="this.form.submit()">
+                      <option {%if r.status == 'Новая'%} selected {%endif%} value="Новая">Новая</option>
+                      <option {%if r.status == 'В процессе'%} selected {%endif%} value="В процессе">В процессе</option>
+                      <option {%if r.status == 'Обучение завершено'%} selected {%endif%} value="Обучение завершено">Обучение завершено</option>
+                  </select> <br>
+                </form>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+
+
+</body>
+</html>
