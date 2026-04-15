@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корочки.есть</title>
+</head>
+<body>
+    <h1>Новая заявка</h1>
+    <a href="/profile">Назад</a>
+    <form action="/create_request" method="post">
+        Курс: <select name="course">
+            {%for c in courses%}
+            <option value="{{c}}">{{c}}</option>
+            {%endfor%}
+        </select> <br>
+        Дата старта: <input type="date" name="date" required> <br>
+        Способ оплаты: <select name="payment">
+            {%for p in payments%}
+            <option value="{{p}}">{{p}}</option>
+            {%endfor%}
+        </select> <br>
+        <button type="submit">Отправить</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корочки.есть</title>
+</head>
+<body>
+    <h1>Админ-Панель</h1>
+    <a href="/logout"></a>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Логин</th>
+            <th>ФИО</th>
+            <th>Курс</th>
+            <th>Дата</th>
+            <th>Оплата</th>
+            <th>Статус</th>
+        </tr>
+        {%for r in requests%}
+        <tr>
+            <td>{{r.user_id}}</td>
+            <td>{{r.login}}</td>
+            <td>{{r.fio}}</td>
+            <td>{{r.course_name}}</td>
+            <td>{{r.date_start}}</td>
+            <td>{{r.payment_method}}</td>
+            <td>
+                <form action="/admin/change_status" method="post">
+                    <input type="hidden" name="request_id" value="{{r.id}}">
+                    <select name="status" onchange="this.form.submit()">
+                        <option {%if r.status == 'Новая'%} selected {%endif%} value="Новая">Новая</option>
+                        <option {%if r.status == 'Идет обучение'%} selected {%endif%} value="Идет обучение">Идет обучение</option>
+                        <option {%if r.status == 'Обучение завершено'%} selected {%endif%} value="Обучение завершено">Обучение завершено</option>
+                    </select>
+                </form>
+            </td>
+        </tr>
+        {%endfor%}
+    </table>
+</body>
+</html>

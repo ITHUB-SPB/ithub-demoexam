@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корочки.есть</title>
+</head>
+<body>
+    <h1>Профиль</h1>
+    <a href="/create_request">Создать заявку</a> | <a href="/logout">Выйти</a>
+    {%for r in requests%}
+    <div style="border: 1px solid grey; padding: 10px; margin: 10px;">
+        <p>Курс: {{r.course_name}}</p>
+        <p>Дата: {{r.date_start}}</p>
+        <p>Оплата: {{r.payment_method}}</p>
+        {%if r.status == "Обучение завершено" and r.review == None%}
+        <form action="/add_review" method="post">
+            <input type="hidden" name="request_id" value="{{r.id}}">
+            <textarea name="review" required placeholder="Оставьте отзыв"></textarea>
+            <button type="submit">Отправить</button>
+        </form>
+        {%endif%}
+        {%if r.review%}
+        <p>Отзыв: {{r.review}}</p>
+        {%endif%}
+    </div>
+    {%endfor%}
+</body>
+</html>
