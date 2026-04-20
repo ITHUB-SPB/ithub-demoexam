@@ -1,0 +1,29 @@
+{% extends '_layout.html' %}
+
+{% block nav %}
+<a href="/logout">Выйти</a>
+<a href="/create">Создать заявку</a>
+{% endblock %}
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Курс</th>
+            <th>Оплата</th>
+            <th>Дата</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in records %}
+        <tr>
+            <td>{{ item["course"] }}</td>
+            <td>{{ item["payment"] }}</td>
+            <td>{{ item["date"] }}</td>
+            <td>{{ item["status"] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

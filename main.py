@@ -1,12 +1,11 @@
 from typing import Annotated
-
+from typing import Optional
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import SQLModel, Field, create_engine, Session, select
-
 
 class Record(SQLModel, table=True):
     id: int | None = Field(primary_key=True, default=None)
@@ -17,10 +16,12 @@ class Record(SQLModel, table=True):
     user_id: int
 
 
-class NewRecord(SQLModel):
+class NewRecord(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
     course: str
     date: str
     payment: str
+    user_id: int
 
 
 class User(SQLModel, table=True):
@@ -32,11 +33,9 @@ class User(SQLModel, table=True):
     phone: str
     role: str | None = Field(default="user")
 
-
 class UserAuth(SQLModel):
     login: str
     password: str
-
 
 engine = create_engine(r'sqlite:///database.sqlite')
 SQLModel.metadata.create_all(bind=engine)
@@ -66,15 +65,14 @@ def admin(request: Request):
     role = request.cookies.get('role')
 
     with Session(bind=engine) as session:
-        s = select(Record, User).where(Record.user_id == User.id)
-        records = session.exec(s).all()
 
+        s = select(Record, User).where(Record.uder_id == User.id)
+        record = session.exec(s).all()
     return templates.TemplateResponse(
         request,
         'admin.html',
-        { "records": records }
+        {"records": record}
     )
-
 
 @app.get('/profile')
 def profile(request: Request):
@@ -85,12 +83,12 @@ def profile(request: Request):
         s = select(Record).where(Record.user_id == int(user_id))
         records = session.exec(s).all()
 
-    return templates.TemplateResponse(
-        request,
-        'profile.html',
-        { "records": records }
-    )
-
+        return templates.TemplateResponse(
+            request,
+            'profile.html',
+            { "records": records }
+        )
+    
 
 @app.get('/logout')
 def logout():
@@ -105,84 +103,3 @@ def logout():
 @app.get('/create')
 def create(request: Request):
     return templates.TemplateResponse(request, 'create.html')
-
-
-@app.post('/create')
-def create_process(request: Request, new_record: Annotated[NewRecord, Form()]):
-    user_id = request.cookies.get('user_id')
-
-    with Session(bind=engine) as session:
-        session.add(Record(
-            user_id=user_id,
-            course=new_record.course,
-            payment=new_record.payment,
-            date=new_record.date,
-            status="Новая"
-        ))
-        session.commit()
-
-    return RedirectResponse('/profile', status_code=302)
-
-@app.post('/update/{update_id}')
-def update_process(request: Request, update_id: int, status: Annotated[str, Form()]):
-    with Session(bind=engine) as session:
-        s = select(Record).where(Record.id == update_id)
-        record: Record = session.exec(s).one()
-        record.status = status
-        session.add(record)
-        session.commit()
-        session.refresh(record)
-
-    return RedirectResponse('/admin', status_code=302)
-
-
-
-@app.get('/register')
-def register(request: Request):
-    return templates.TemplateResponse(request, 'register.html')
-
-
-@app.post('/register')
-def register_process(request: Request, user: Annotated[User, Form()]):
-    with Session(bind=engine) as session:
-        try:
-            session.add(user)
-            session.commit()
-        except IntegrityError:
-            session.rollback()
-            return templates.TemplateResponse(
-                request,
-                'register.html',
-                { "error": "Логин уже существует" }
-            )
-
-    return RedirectResponse('/login', status_code=302)
-
-
-@app.get('/login')
-def login(request: Request):
-    return templates.TemplateResponse(request, 'login.html')
-
-
-@app.post('/login')
-def login_process(request: Request, user_auth: Annotated[UserAuth, Form()]):
-    response = RedirectResponse('/', status_code=302)
-
-    if user_auth.login == 'Admin1' and user_auth.password == "KorokNET":
-        response.set_cookie('role', 'admin')
-        return response
-
-    with Session(bind=engine) as session:
-        s = select(User).where(User.login == user_auth.login).where(User.password == user_auth.password)
-        user: User | None = session.exec(s).one_or_none()
-        if not user:
-            return templates.TemplateResponse(
-                request,
-                'login.html',
-                { "error": "Не удалось войти" }
-            )
-
-        response.set_cookie('user_id', user.id)
-        response.set_cookie('role', user.role)
-
-        return response
