@@ -1,0 +1,52 @@
+{% extends "_layout.html" %}
+
+{% block title %}Панель администратора{% endblock %}
+
+{% block nav %}
+    <span>Администратор</span>
+    <a href="/logout">Выйти</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Панель администратора</h2>
+    <p>Все заявки пользователей:</p>
+
+    <table border="1" style="width:100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Пользователь</th>
+                <th>Курс</th>
+                <th>Дата</th>
+                <th>Оплата</th>
+                <th>Статус</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for app, user in applications %}
+            <tr>
+                <td>{{ app.id }}</td>
+                <td>{{ user.first_name }} {{ user.last_name }} ({{ user.login }})</td>
+                <td>{{ app.course_name }}</td>
+                <td>{{ app.start_date.strftime('%d.%m.%Y') }}</td>
+                <td>{{ app.payment_method }}</td>
+                <td>{{ app.status }}</td>
+                <td>
+                    <form method="post" action="/admin/status/{{ app.id }}" style="margin:0;">
+                        <select name="new_status">
+                            <option value="Новая" {% if app.status == "Новая" %}selected{% endif %}>Новая</option>
+                            <option value="Идет обучение" {% if app.status == "Идет обучение" %}selected{% endif %}>Идет обучение</option>
+                            <option value="Обучение завершено" {% if app.status == "Обучение завершено" %}selected{% endif %}>Обучение завершено</option>
+                        </select>
+                        <button type="submit">Изменить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+    <a href="/dashboard">Назад к моим заявкам</a>
+{% endblock %}

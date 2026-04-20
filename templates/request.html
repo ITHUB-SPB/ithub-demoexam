@@ -1,0 +1,40 @@
+{% extends "_layout.html" %}
+
+{% block title %}Новая заявка{% endblock %}
+
+{% block nav %}
+    <span>Привет, {{ user.first_name }}!</span>
+    <a href="/dashboard">Мои заявки</a>
+    <a href="/logout">Выйти</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Новая заявка на обучение</h2>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    <form method="post">
+        <label>Выберите курс:</label>
+        <select name="course_name" required>
+            {% for course in courses %}
+                <option value="{{ course }}">{{ course }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+
+        <label>Дата начала (ДД.ММ.ГГГГ):</label>
+        <input type="text" name="start_date" placeholder="01.01.2025" required>
+        <br><br>
+
+        <label>Способ оплаты:</label>
+        <select name="payment_method" required>
+            <option value="наличными">Наличными</option>
+            <option value="переводом по номеру телефона">Переводом по номеру телефона</option>
+        </select>
+        <br><br>
+
+        <button type="submit">Отправить заявку</button>
+    </form>
+{% endblock %}

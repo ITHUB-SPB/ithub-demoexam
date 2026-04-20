@@ -1,0 +1,18 @@
+{% extends "_layout.html" %}
+
+{% block title %}Вход{% endblock %}
+
+{% block nav %}
+    <a href="/login">Вход</a>
+    <a href="/register">Регистрация</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Авторизация</h2>
+    <form method="post">
+        <input type="text" name="login" placeholder="Логин" required><br>
+        <input type="password" name="password" placeholder="Пароль" required><br>
+        <button type="submit">Войти</button>
+    </form>
+    <a href="/register">Еще не зарегистрированы? Регистрация</a>
+{% endblock %}

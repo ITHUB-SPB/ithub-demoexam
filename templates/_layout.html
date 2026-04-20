@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Заявки</title>
     <link rel="stylesheet" href="/static/vendor/pico.css">
-    <link rel="stylesheet" href="/static/vendor/glide.core.css">
     <link rel="stylesheet" href="/static/global.css">
 </head>
 <body>
@@ -16,31 +15,103 @@
             {% block nav %} {% endblock %}
         </header>
 
-        <div class="glide">
-            <div data-glide-el="track" class="glide__track">
-                <div class="glide__slides">
-                    <img class="glide__slide" src="/static/images/slider/image06.jpg" alt="">
-                    <img class="glide__slide" src="/static/images/slider/image07.jpg" alt="">
-                    <img class="glide__slide" src="/static/images/slider/image08.webp" alt="">
-                    <img class="glide__slide" src="/static/images/slider/image10.webp" alt="">
+        <div class="slider-container">
+            <div class="slider-track" id="sliderTrack">
+                <div class="slider-slide">
+                    <img src="/static/images/slider/image06.jpg" alt="Слайд 1">
                 </div>
-               <div class="glide__arrows" data-glide-el="controls">
-                <button class="glide__arrow glide__arrow--prev" data-glide-dir="<">&lt;</button>
-                <button class="glide__arrow glide__arrow--next" data-glide-dir=">">&gt;</button>
-               </div>
+                <div class="slider-slide">
+                    <img src="/static/images/slider/image07.jpg" alt="Слайд 2">
+                </div>
+                <div class="slider-slide">
+                    <img src="/static/images/slider/image08.webp" alt="Слайд 3">
+                </div>
+                <div class="slider-slide">
+                    <img src="/static/images/slider/image10.webp" alt="Слайд 4">
+                </div>
             </div>
+
+            <button class="slider-btn slider-prev" id="prevBtn">❮</button>
+            <button class="slider-btn slider-next" id="nextBtn">❯</button>
+            <div class="slider-dots" id="sliderDots"></div>
         </div>
 
         {% if error %}
-            <p>{{ error }}</p>
+            <p style="color: red;">{{ error }}</p>
         {% endif %}
 
         {% block content %} {% endblock %}
     </div>
 
-    <script src="/static/vendor/glide.js"></script>
     <script>
-        new Glide('.glide', { autoplay: 3000, perView: 2 }).mount()
+        (function() {
+            const track = document.getElementById('sliderTrack');
+            const slides = document.querySelectorAll('.slider-slide');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const dotsContainer = document.getElementById('sliderDots');
+
+            let currentIndex = 0;
+            const totalSlides = slides.length;
+            let autoplayInterval;
+
+            function createDots() {
+                dotsContainer.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('span');
+                    dot.classList.add('slider-dot');
+                    if (i === currentIndex) dot.classList.add('active');
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dotsContainer.appendChild(dot);
+                }
+            }
+
+            function updateSlider() {
+                track.style.transform = `translateX(-${currentIndex * 100}%)`;
+                document.querySelectorAll('.slider-dot').forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+            }
+
+            function goToSlide(index) {
+                currentIndex = index;
+                updateSlider();
+                resetAutoplay();
+            }
+
+            function nextSlide() {
+                currentIndex = (currentIndex + 1) % totalSlides;
+                updateSlider();
+                resetAutoplay();
+            }
+
+            function prevSlide() {
+                currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+                updateSlider();
+                resetAutoplay();
+            }
+
+            function startAutoplay() {
+                if (autoplayInterval) clearInterval(autoplayInterval);
+                autoplayInterval = setInterval(() => nextSlide(), 3000);
+            }
+
+            function resetAutoplay() {
+                clearInterval(autoplayInterval);
+                startAutoplay();
+            }
+
+            const container = document.querySelector('.slider-container');
+            container.addEventListener('mouseenter', () => clearInterval(autoplayInterval));
+            container.addEventListener('mouseleave', () => startAutoplay());
+
+            prevBtn.addEventListener('click', prevSlide);
+            nextBtn.addEventListener('click', nextSlide);
+
+            createDots();
+            updateSlider();
+            startAutoplay();
+        })();
     </script>
 </body>
 </html>

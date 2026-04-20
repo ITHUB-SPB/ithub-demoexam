@@ -1,0 +1,22 @@
+{% extends "_layout.html" %}
+
+{% block title %}Регистрация{% endblock %}
+
+{% block nav %}
+    <a href="/login">Вход</a>
+    <a href="/register">Регистрация</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Регистрация</h2>
+    <form method="post">
+        <input type="text" name="login" placeholder="Логин (латиница, 6+)" required><br>
+        <input type="password" name="password" placeholder="Пароль (8+)" required><br>
+        <input type="text" name="first_name" placeholder="Имя" required><br>
+        <input type="text" name="last_name" placeholder="Фамилия" required><br>
+        <input type="text" name="phone" placeholder="Телефон 8(XXX)XXX-XX-XX" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <a href="/login">Уже есть аккаунт? Войти</a>
+{% endblock %}

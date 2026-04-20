@@ -1,0 +1,21 @@
+{% extends "_layout.html" %}
+
+{% block title %}Заявки{% endblock %}
+
+{% block nav %}
+    <span>Привет, {{ user.first_name }}!</span>
+    <a href="/logout">Выйти</a>
+{% endblock %}
+
+{% block content %}
+    <h2>Заявки</h2>
+    <a href="/request">Новая заявка</a>
+
+    {% for app in applications %}
+        <div style="border:1px solid #ccc; margin:10px; padding:10px">
+            <b>{{ app.course_name }}</b><br>
+            Статус: {{ app.status }}<br>
+            Дата: {{ app.start_date.strftime('%d.%m.%Y') }}<br>
+        </div>
+    {% endfor %}
+{% endblock %}

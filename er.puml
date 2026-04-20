@@ -1,0 +1,28 @@
+@startuml
+!theme plain
+
+entity User {
+  * id : INTEGER PK
+  --
+  * login : TEXT UNIQUE
+  * password : TEXT
+  * first_name : TEXT
+  * last_name : TEXT
+  * phone : TEXT
+  * email : TEXT
+  * role : TEXT
+}
+
+entity Application {
+  * id : INTEGER PK
+  --
+  * user_id : INTEGER FK
+  * course_name : TEXT
+  * start_date : DATE
+  * payment_method : TEXT
+  * status : TEXT
+  * review : TEXT
+}
+
+User ||--o{ Application : "1 : M"
+@enduml
