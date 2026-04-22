@@ -30,7 +30,6 @@ class User(SQLModel, table=True):
     email: str
     fio: str
     phone: str
-    role: str | None = Field(default="user")
 
 
 class UserAuth(SQLModel):
@@ -50,36 +49,10 @@ app.mount('/static', static)
 
 @app.get('/')
 def index(request: Request):
-    role = request.cookies.get('role')
-
-    if not role:
-        return RedirectResponse('/login', status_code=302)
-
-    if role == "admin":
-        return RedirectResponse('/admin', status_code=302)
-
-    return RedirectResponse('/profile', status_code=302)
-
-
-@app.get('/admin')
-def admin(request: Request):
-    role = request.cookies.get('role')
-
-    with Session(bind=engine) as session:
-        s = select(Record, User).where(Record.user_id == User.id)
-        records = session.exec(s).all()
-
-    return templates.TemplateResponse(
-        request,
-        'admin.html',
-        { "records": records }
-    )
-
-
-@app.get('/profile')
-def profile(request: Request):
-    role = request.cookies.get('role')
     user_id = request.cookies.get('user_id')
+
+    if not user_id:
+        return RedirectResponse('/login', status_code=302)
 
     with Session(bind=engine) as session:
         s = select(Record).where(Record.user_id == int(user_id))
@@ -95,21 +68,26 @@ def profile(request: Request):
 @app.get('/logout')
 def logout():
     response = RedirectResponse('/login', status_code=302)
-
     response.delete_cookie('user_id')
-    response.delete_cookie('role')
-
     return response
 
 
 @app.get('/create')
 def create(request: Request):
+    user_id = request.cookies.get('user_id')
+
+    if not user_id:
+        return RedirectResponse('/login', status_code=302)
+
     return templates.TemplateResponse(request, 'create.html')
 
 
 @app.post('/create')
 def create_process(request: Request, new_record: Annotated[NewRecord, Form()]):
     user_id = request.cookies.get('user_id')
+
+    if not user_id:
+        return RedirectResponse('/login', status_code=302)
 
     with Session(bind=engine) as session:
         session.add(Record(
@@ -122,19 +100,6 @@ def create_process(request: Request, new_record: Annotated[NewRecord, Form()]):
         session.commit()
 
     return RedirectResponse('/profile', status_code=302)
-
-@app.post('/update/{update_id}')
-def update_process(request: Request, update_id: int, status: Annotated[str, Form()]):
-    with Session(bind=engine) as session:
-        s = select(Record).where(Record.id == update_id)
-        record: Record = session.exec(s).one()
-        record.status = status
-        session.add(record)
-        session.commit()
-        session.refresh(record)
-
-    return RedirectResponse('/admin', status_code=302)
-
 
 
 @app.get('/register')
@@ -168,10 +133,6 @@ def login(request: Request):
 def login_process(request: Request, user_auth: Annotated[UserAuth, Form()]):
     response = RedirectResponse('/', status_code=302)
 
-    if user_auth.login == 'Admin1' and user_auth.password == "KorokNET":
-        response.set_cookie('role', 'admin')
-        return response
-
     with Session(bind=engine) as session:
         s = select(User).where(User.login == user_auth.login).where(User.password == user_auth.password)
         user: User | None = session.exec(s).one_or_none()
@@ -183,6 +144,4 @@ def login_process(request: Request, user_auth: Annotated[UserAuth, Form()]):
             )
 
         response.set_cookie('user_id', user.id)
-        response.set_cookie('role', user.role)
-
         return response
